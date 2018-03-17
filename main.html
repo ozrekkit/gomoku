@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link href="https://fonts.googleapis.com/css?family=Mina" rel="stylesheet">
+	<link href="assets/bower_components/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/bower_components/components-font-awesome/css/fontawesome-all.css" type="text/css" rel="stylesheet">
+	<link href="assets/css/styles.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+				<a class="navbar-brand" href="#">Gomoku</a>
+				<a class="btn btn-primary" href="/tic-tac-toe/new-game.html" role="button">New game</a>
+			</nav>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-8">
+			<table id="game-field"></table>
+		</div>
+		<div class="col-4">
+			<div class="row">
+				<div class="col score">
+					<i class="fas fa-user-circle"></i> <span id="player1">Player name</span>
+					<div class="score-value">0</div>
+				</div>
+				<div class="col score">
+					<i class="far fa-user-circle"></i> <span id="player2">Player name2</span>
+					<div class="score-value">0</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="assets/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

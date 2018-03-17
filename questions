@@ -1,1 +1,10 @@
 [ ] - Чем отличаются двойное тройное равно?
+
+document.querySelector('td[row="5"][col="6"]')
+<td row=​"5" col=​"6">​</td>​
+
+cell.getAttribute('row');
+"5"
+
+cell.getAttribute('col');
+"6"
