@@ -87,7 +87,7 @@ function isTurnAvailable(target) {
 
 //== 4 =========================================
 function findWinnerLine(cell, player) {
-    var row = findWinnerRow(player);
+    var row = findWinnerRow(cell, player);
     if (row.length) {
         return row;
     }
@@ -98,12 +98,35 @@ function findWinnerLine(cell, player) {
     return findWinnerDiagonal(player);
 }
 
-function findWinnerRow(player) {
-    //TODO
-    return [];
+function findWinnerRow(cell, player) {
+    var row = cell.getAttribute('row');
+    var col = cell.getAttribute('col');
+    var resultLine = [cell];
+    var directions = [
+        {inc: 1, to: 0},
+        {inc: -1, to: +gridSize}
+    ];
+    directions.forEach(function (value) {
+        var inc = directions.inc;
+        for (var i = col - inc; i === value.to; i -inc) {
+            var selector = 'td [row = "'+ row +'"] col = ["'+ i +'"]';
+            if (document.querySelector(selector).innerHTML !== player.symbol){
+                break;
+            }
+            resultLine.push(document.querySelector(selector))
+
+        };
+    });
+
+    return resultLine.length >= 5 ? resultLine : [];
 }
 
 function findWinnerCol(cell, player) {
+    var arr = [1, 2, 3, 4, 5];
+    arr.forEach(function (number){
+        console.log(number);
+    });
+
     var row = cell.getAttribute('row');
     var col = cell.getAttribute('col');
     var resultLine = [cell];
