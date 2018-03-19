@@ -95,7 +95,7 @@ function findWinnerLine(cell, player) {
     if (coll.length) {
         return coll;
     }
-    return findWinnerDiagonal(player);
+    return findWinnerDiagonal(cell, player);
 }
 
 function findWinnerRow(cell, player) {
@@ -107,13 +107,14 @@ function findWinnerRow(cell, player) {
         {inc: -1, to: +gridSize}
     ];
     directions.forEach(function (value) {
-        var inc = directions.inc;
+        var inc = value.inc;
         for (var i = col - inc; i === value.to; i -inc) {
-            var selector = 'td [row = "'+ row +'"] col = ["'+ i +'"]';
-            if (document.querySelector(selector).innerHTML !== player.symbol){
+            var selectors = 'td [row = "'+ row +'"] col = ["'+ i +'"]';
+            var currentCell = document.querySelector(selectors);
+            if (currentCell.innerHTML !== player.symbol){
                 break;
             }
-            resultLine.push(document.querySelector(selector))
+            resultLine.push(document.querySelector(selectors));
 
         };
     });
@@ -122,11 +123,6 @@ function findWinnerRow(cell, player) {
 }
 
 function findWinnerCol(cell, player) {
-    var arr = [1, 2, 3, 4, 5];
-    arr.forEach(function (number){
-        console.log(number);
-    });
-
     var row = cell.getAttribute('row');
     var col = cell.getAttribute('col');
     var resultLine = [cell];
@@ -148,12 +144,25 @@ function findWinnerCol(cell, player) {
     return resultLine.length >= 5 ? resultLine : [];
 }
 
-function findWinnerDiagonal(player) {
-    var diagonal = findWinnerLeftDiagonal(player);
-    if (diagonal.length) {
-        return diagonal;
-    }
-    return findWinnerRightDiagonal(player);
+function findWinnerDiagonal(cell, player) {
+    var col = cell.getAttribute('col');
+    var row = cell.getAttribute('row');
+    var resultsLine = [cell];
+    var directions = [
+        {inc: 1, to: 0},
+        {inc: -1, to: +gridSize}
+    ];
+    directions.forEach(function (derections){
+        var inc = derections.inc;
+        var i, j;
+        for (i = row -inc, j = col - inc; row === directions.to || col === derections.to; i-inc, j-inc ) {
+            console.log(i+" - "+j);
+            alert('hi');
+        }
+    });
+    return [];
+    
+    
 }
 
 function findWinnerLeftDiagonal(player) {
