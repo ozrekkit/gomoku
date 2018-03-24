@@ -6,11 +6,15 @@ var p1 = new Player('Vasja', 'X', "player-1");
 var p2 = new Player('Tola', 'O', "player-2");
 var turningPlayer = p1;
 var gridSize = initConfig.size;
+var lineLengthForWin = 5;
 
 var gameField = document.getElementById('game-field');
 createGrid(initConfig.size);
 gameField.addEventListener('click', cellClickHandler);
+var continueGameBtn = document.getElementById("continue-game-btn");
+continueGameBtn.addEventListener('click', resetClickHandler);
 
+// gameField.removeEventListener('click', cellClickHandler);
 // var resetBtnElement = document.getElementById('reset-btn');
 // resetBtnElement.addEventListener('click', resetClickHandler);
 
@@ -38,7 +42,7 @@ function cellClickHandler(event) {
 }
 
 function resetClickHandler() {
-    var cellElements = gameField.getElementsByTagName('TD');
+    var cellElements = gameField.getElementsByTagName('td');
     for (var i = 0; i < cellElements.length; i++) {
         cellElements[i].innerHTML = '';
     }
@@ -64,14 +68,19 @@ function doTurn(cell) {
     if (winnerLine.length) {
         turningPlayer.incrementScore();
         highlightLine(winnerLine);
-        //TODO Посчитать очки
-
-        //TODO Заблокировать поле до нажатия кнопки reset
-        setTimeout(function () {
-            alert(turningPlayer.name + ' is winner!');
-        }, 0);
+        $('#modalInfo')
+            .on('show.bs.modal', function () {
+                var elementById = document.getElementById("winnerLabel");
+                elementById.innerHTML = turningPlayer.name + " is winner!!!";
+            })
+            .modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+            .modal('toggle');
+    } else {
+        turningPlayer = turningPlayer === p1 ? p2 : p1;
     }
-    turningPlayer = turningPlayer === p1 ? p2 : p1;
 }
 
 
@@ -87,90 +96,107 @@ function isTurnAvailable(target) {
 
 //== 4 =========================================
 function findWinnerLine(cell, player) {
-    var row = findWinnerRow(cell, player);
-    if (row.length) {
+    var r = +cell.getAttribute('row');
+    var c = +cell.getAttribute('col');
+    var row = findWinnerRow(r, c, player);
+    row.push(cell);
+    if (row.length >= lineLengthForWin) {
         return row;
     }
-    var coll = findWinnerCol(cell, player);
-    if (coll.length) {
+    var coll = findWinnerCol(r, c, player);
+    coll.push(cell);
+    if (coll.length >= lineLengthForWin) {
         return coll;
     }
-    return findWinnerDiagonal(cell, player);
+    var leftDiagonal = findWinnerLeftDiagonal(r, c, player);
+    leftDiagonal.push(cell);
+    if (leftDiagonal.length >= lineLengthForWin) {
+        return leftDiagonal;
+    }
+    var rightDiagonal = findWinnerRightDiagonal(r, c, player);
+    rightDiagonal.push(cell);
+    if (rightDiagonal.length >= lineLengthForWin) {
+        return rightDiagonal;
+    }
+    return [];
 }
 
-function findWinnerRow(cell, player) {
-    var row = cell.getAttribute('row');
-    var col = cell.getAttribute('col');
-    var resultLine = [cell];
-    var directions = [
-        {inc: 1, to: 0},
-        {inc: -1, to: +gridSize}
-    ];
-    directions.forEach(function (value) {
-        var inc = value.inc;
-        for (var i = col - inc; i === value.to; i -inc) {
-            var selectors = 'td [row = "'+ row +'"] col = ["'+ i +'"]';
-            var currentCell = document.querySelector(selectors);
-            if (currentCell.innerHTML !== player.symbol){
-                break;
-            }
-            resultLine.push(document.querySelector(selectors));
-
-        };
-    });
-
-    return resultLine.length >= 5 ? resultLine : [];
-}
-
-function findWinnerCol(cell, player) {
-    var row = cell.getAttribute('row');
-    var col = cell.getAttribute('col');
-    var resultLine = [cell];
+function findWinnerRow(row, col, player) {
+    var resultLine = [];
     var directions = [
         {inc: 1, to: 0},
         {inc: -1, to: +gridSize}
     ];
     directions.forEach(function (direction) {
         var inc = direction.inc;
-        for (var j = row - inc; j === direction.to; j - inc) {
-            var selectors = 'td[row="' + j + '"][col="' + col + '"]';
-            var currentCell = document.querySelector(selectors);
-            if (currentCell.innerHTML !== player.symbol) {
+        for (var i = col - inc; i !== direction.to; i -= inc) {
+            var selectors = 'td[row="' + row + '"][col="' + i + '"]';
+            var cell = gameField.querySelector(selectors);
+            if (cell.innerHTML !== player.symbol) {
                 break;
             }
-            resultLine.push(currentCell);
+            resultLine.push(gameField.querySelector(selectors));
         }
     });
-    return resultLine.length >= 5 ? resultLine : [];
+    return resultLine;
 }
 
-function findWinnerDiagonal(cell, player) {
-    var col = cell.getAttribute('col');
-    var row = cell.getAttribute('row');
-    var resultsLine = [cell];
+function findWinnerCol(row, col, player) {
+    var resultLine = [];
     var directions = [
         {inc: 1, to: 0},
         {inc: -1, to: +gridSize}
     ];
-    directions.forEach(function (derections){
-        var inc = derections.inc;
-        var i, j;
-        for (i = row -inc, j = col - inc; row === directions.to || col === derections.to; i-inc, j-inc ) {
-            console.log(i+" - "+j);
-            alert('hi');
+    directions.forEach(function (direction) {
+        var inc = direction.inc;
+        for (var j = row - inc; j !== direction.to; j -= inc) {
+            var selectors = 'td[row="' + j + '"][col="' + col + '"]';
+            var cell = gameField.querySelector(selectors);
+            if (cell.innerHTML !== player.symbol) {
+                break;
+            }
+            resultLine.push(cell);
         }
     });
-    return [];
-    
-    
+    return resultLine;
 }
 
-function findWinnerLeftDiagonal(player) {
-    //TODO
-    return [];
+function findWinnerLeftDiagonal(row, col, player) {
+    var resultLine = [];
+    var directions = [
+        {inc: 1, to: 0},
+        {inc: -1, to: +gridSize}
+    ];
+    directions.forEach(function (direction) {
+        var inc = direction.inc;
+        for (var r = row - inc, c = col - inc; r !== direction.to || c !== direction.to; r -= inc, c -= inc) {
+            var selectors = 'td[row="' + r + '"][col="' + c + '"]';
+            var cell = gameField.querySelector(selectors);
+            if (cell.innerHTML !== player.symbol) {
+                break;
+            }
+            resultLine.push(cell);
+        }
+    });
+    return resultLine;
 }
 
-function findWinnerRightDiagonal(player) {
-    //TODO
-    return [];
+function findWinnerRightDiagonal(row, col, player) {
+    var resultLine = [];
+    var directions = [
+        {inc: 1, from: 0, to: +gridSize},
+        {inc: -1, from: +gridSize, to: 0}
+    ];
+    directions.forEach(function (direction) {
+        var offset = direction.inc;
+        for (var r = row - offset, c = col + offset; r !== direction.from || c !== direction.to; r -= offset, c += offset) {
+           var selectors = 'td[row="' + r + '"][col="' + c + '"]';
+           var cell = gameField.querySelector(selectors);
+           if (cell.innerHTML !== player.symbol) {
+               break;
+           }
+           resultLine.push(cell);
+        }
+    });
+    return resultLine;
 }

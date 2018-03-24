@@ -9,6 +9,29 @@
 	<link href="assets/css/styles.css" type="text/css" rel="stylesheet">
 </head>
 <body>
+<!-- MODAL -->
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Information</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body text-center">
+				<h1 id="winnerLabel">X / 0 winner!!!</h1>
+				<h2>Play again?</h2>
+			</div>
+			<div class="modal-footer">
+				<button id="reject-continue-btn" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+				<button id="continue-game-btn" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- CONTENT -->
 <div class="container">
 	<div class="row">
 		<div class="col">
@@ -26,11 +49,11 @@
 			<div class="row">
 				<div class="col score">
 					<i class="fas fa-user-circle"></i> <span id="player1">Player name</span>
-					<div class="score-value">0</div>
+					<div id="player-1" class="score-value">0</div>
 				</div>
 				<div class="col score">
 					<i class="far fa-user-circle"></i> <span id="player2">Player name2</span>
-					<div class="score-value">0</div>
+					<div id="player-2" class="score-value">0</div>
 				</div>
 			</div>
 		</div>
